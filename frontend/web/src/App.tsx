@@ -16,6 +16,16 @@ interface WaterRequest {
   allocatedAmount?: number;
 }
 
+// Parse simulated FHE encrypted data
+const parseRequestData = (encrypted: string) => {
+  try {
+    const decoded = atob(encrypted.replace("FHE-", ""));
+    return JSON.parse(decoded);
+  } catch (e) {
+    return { location: "", cropType: "", areaSize: "", waterNeed: "" };
+  }
+};
+
 const App: React.FC = () => {
   const [account, setAccount] = useState("");
   const [loading, setLoading] = useState(true);
@@ -54,15 +64,7 @@ const App: React.FC = () => {
     loadRequests().finally(() => setLoading(false));
   }, []);
 
-  // Parse simulated FHE encrypted data
-  const parseRequestData = (encrypted: string) => {
-    try {
-      const decoded = atob(encrypted.replace("FHE-", ""));
-      return JSON.parse(decoded);
-    } catch (e) {
-      return { location: "", cropType: "", areaSize: "", waterNeed: "" };
-    }
-  };
+  
 
   const onWalletSelect = async (wallet: any) => {
     if (!wallet.provider) return;
